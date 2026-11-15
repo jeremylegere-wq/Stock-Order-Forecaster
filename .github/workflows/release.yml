@@ -1,0 +1,84 @@
+name: Release
+
+# Starts when a tag like v0.2.0 is pushed. It re-runs every CI check, builds source archives from the
+# tagged commit, and only then creates the GitHub Release. Nothing is published anywhere else.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read              # default for every job; only "publish" below is allowed to write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    name: Run all CI checks
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    name: Build source archives and release notes
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # needed to confirm the tag is on main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tag must match VERSION and CHANGELOG.md
+        id: meta
+        run: |
+          python scripts/release_tools.py check "$GITHUB_REF_NAME"
+          echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+      - name: Tagged commit must be on main
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main \
+            || { echo "::error::Tag $GITHUB_REF_NAME is not on main. Merge to main first, then tag."; exit 1; }
+      - name: Build archives (deterministic, from the tagged commit only)
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          mkdir dist
+          name="stock-order-forecaster-${VERSION}"
+          git archive --format=zip       --prefix="${name}/" -o "dist/${name}.zip" HEAD
+          git archive --format=tar       --prefix="${name}/" HEAD | gzip -n > "dist/${name}.tar.gz"
+          python scripts/release_tools.py notes "$VERSION" > dist/RELEASE_NOTES.md
+          (cd dist && sha256sum "${name}.zip" "${name}.tar.gz" > SHA256SUMS.txt && cat SHA256SUMS.txt)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write          # the only job that can create a release; uses the built-in token, no secrets
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-files
+          path: dist
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          flags=()
+          case "$VERSION" in *-*) flags+=(--prerelease);; esac      # 1.2.3-rc.1 style versions
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "Stock Order Forecaster ${VERSION}" --notes-file dist/RELEASE_NOTES.md "${flags[@]}" \
+            "dist/stock-order-forecaster-${VERSION}.zip" "dist/stock-order-forecaster-${VERSION}.tar.gz" dist/SHA256SUMS.txt

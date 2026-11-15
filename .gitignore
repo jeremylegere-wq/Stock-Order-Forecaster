@@ -1,0 +1,12 @@
+# secrets - never commit
+.env
+# local database and generated output
+data/*.db
+data/*.db-journal
+data/events/
+data/_replaced/
+output/
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/

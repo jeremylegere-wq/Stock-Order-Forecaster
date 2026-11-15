@@ -1,0 +1,36 @@
+# Epos Now connection settings (NOT secrets - the key and secret live in the .env file).
+#
+# IMPORTANT: these endpoint and field names are the documented/expected ones for the Epos Now
+# REST API, but they have not been checked against your shop's live data. Run
+#
+#     python sync.py probe
+#
+# once with your key in .env. It prints what the API really returns. If a field name differs,
+# change it here - no code changes needed.
+
+[api]
+base_url = "https://api.eposnowhq.com/api/V4"
+page_size = 200            # the API returns up to 200 items per page
+
+[transactions]
+path = "Transaction"
+from_param = "startDate"   # server-side date filter; set both to "" to filter on this computer instead
+to_param = "endDate"
+date_field = "DateTime"
+items_field = "TransactionItems"
+product_id_field = "ProductId"
+qty_field = "Quantity"
+status_field = ""          # e.g. "StatusId" if you need to skip voided sales...
+skip_status = []           # ...and the values to skip, e.g. [3, 4]
+
+[products]
+path = "Product"
+id_field = "Id"
+name_field = "Name"
+cost_field = "CostPrice"
+
+[stock]
+path = "ProductStock"
+product_id_field = "ProductId"
+current_field = "CurrentStock"
+on_order_field = "OnOrder"

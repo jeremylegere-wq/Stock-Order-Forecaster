@@ -1,0 +1,54 @@
+# Stock order forecaster settings.
+#
+# Each [[lines]] block is a product line:
+#   name                = label shown in the output
+#   match               = regular expression applied to the POS "Name" column; the first
+#                         capture group (if any) becomes the size / item label
+#   delivery_quarter    = (optional) the quarter (1-4) the order for this line ARRIVES in.
+#                         Sales expected between now and then are deducted from stock first,
+#                         worked out from the same quarters in past years (average + uncertainty).
+#                         Leave it out and nothing is deducted.
+#   [lines.size_labels] = (optional) maps a raw captured size to a friendlier label
+#
+# The product names below belong to a made-up demo shop. Replace them with your own.
+
+[settings]
+buffer_pct = 10            # safety buffer added on top of the highest year on record
+include_on_order = true    # count "on order" in the POS stock report as stock
+
+# Quarters whose export was pulled before the quarter finished (e.g. mid-quarter).
+# They are treated as incomplete: used only as a floor on the maximum, never in averages.
+# (A quarter that has not ended yet is detected automatically.)
+partial_quarters = []
+
+# Where the program writes a full CSV copy of the database after every load. Point this at a
+# folder that syncs to a shared drive (SharePoint, OneDrive, Dropbox...) so the data survives the
+# loss of this computer. Leave empty to use output/backup inside this folder.
+backup_dir = ""
+
+# Product names to ignore (regular expressions, case-insensitive). POS exports end with a "Total:" row.
+exclude = ["^total:?$"]
+
+# Ordered once a year, arrives in quarter 2. No delivery_quarter on the first line, so today's stock
+# is compared straight against the target. Add  delivery_quarter = 2  to also allow for the sales
+# made before the order arrives.
+[[lines]]
+name = "Fleece Hoodie"
+match = '^Fleece Hoodie (\S+)$'
+
+# Ordered in quarter 1, arrives in quarter 4 (so quarters 2 and 3 are sold from today's stock first).
+[[lines]]
+name = "Basic Tee"
+match = '^Basic Tee (\S+)$'
+delivery_quarter = 4
+
+[lines.size_labels]
+"S"  = "Small"
+"M"  = "Medium"
+"L"  = "Large"
+"XL" = "X-Large"
+
+[[lines]]
+name = "Caps and accessories"
+match = '^(Trucker Cap|Tote Bag|Water Bottle)$'
+delivery_quarter = 4

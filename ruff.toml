@@ -1,0 +1,6 @@
+# Lint only for real errors (syntax errors and pyflakes: unused/undefined names). The project has no
+# style guide, so formatting rules are deliberately not enabled.
+target-version = "py311"
+
+[lint]
+select = ["E9", "F"]

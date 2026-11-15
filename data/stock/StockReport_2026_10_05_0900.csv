@@ -1,0 +1,12 @@
+﻿Name,Barcode,Brand,Supplier,OrderCode,CategoryName,MeasuredCurrentStock,TotalStock,MeasuredOnOrder,MeasuredCostPrice,MeasuredSalePrice,TotalCost,TotalValue,Margin,MarginPerc,Measure,SaleMeasure,MeasurementUnitVolume,CostPriceMeasurementUnitVolume,UnitOfSale
+Basic Tee S,,Demo,Demo Apparel Co,,APPAREL,12,12.00000,0.00000,11.00,25.00,132.00,300.00,14.00,0.4,,,,,
+Basic Tee M,,Demo,Demo Apparel Co,,APPAREL,20,20.00000,10.00000,11.00,25.00,220.00,500.00,14.00,0.4,,,,,
+Basic Tee L,,Demo,Demo Apparel Co,,APPAREL,9,9.00000,0.00000,11.00,25.00,99.00,225.00,14.00,0.4,,,,,
+Basic Tee XL,,Demo,Demo Apparel Co,,APPAREL,-2,-2.00000,0.00000,11.00,25.00,-22.00,-50.00,14.00,0.4,,,,,
+Fleece Hoodie S,,Demo,Demo Apparel Co,,APPAREL,8,8.00000,0.00000,28.00,60.00,224.00,480.00,32.00,0.4,,,,,
+Fleece Hoodie M,,Demo,Demo Apparel Co,,APPAREL,15,15.00000,0.00000,28.00,60.00,420.00,900.00,32.00,0.4,,,,,
+Fleece Hoodie L,,Demo,Demo Apparel Co,,APPAREL,11,11.00000,0.00000,28.00,60.00,308.00,660.00,32.00,0.4,,,,,
+Fleece Hoodie XL,,Demo,Demo Apparel Co,,APPAREL,4,4.00000,0.00000,28.00,60.00,112.00,240.00,32.00,0.4,,,,,
+Trucker Cap,,Demo,Demo Goods,,ACCESSORIES,70,70.00000,0.00000,9.00,22.00,270.00,660.00,13.00,0.4,,,,,
+Tote Bag,,Demo,Demo Goods,,ACCESSORIES,60,60.00000,0.00000,5.00,15.00,125.00,375.00,10.00,0.4,,,,,
+Water Bottle,,Demo,Demo Goods,,ACCESSORIES,18,18.00000,0.00000,7.00,18.00,126.00,324.00,11.00,0.4,,,,,
