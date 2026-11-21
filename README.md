@@ -4,6 +4,8 @@ A small, free tool that tells a shop **how many of each item to order**. Give it
 exports and a stock report from your point-of-sale system. It gives back an order quantity for every size
 of every product, an interactive dashboard, and an Excel file you can send to whoever places the order.
 
+![Stock Planner order sheet, using the bundled fictional demo data](docs/images/order-sheet.png)
+
 It was built for a volunteer-run school uniform shop, using **Epos Now** exports. The method is
 general, so it works for any small shop whose POS can export "sales by product" and "stock levels" as CSV.
 
